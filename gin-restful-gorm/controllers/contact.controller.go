@@ -56,7 +56,7 @@ func SaveContact(db *gorm.DB) func(ctx *gin.Context) {
 		var contact models.Contact
 		if err := ctx.ShouldBind(&contact); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
+				"error": "JSON Error: " + err.Error(),
 			})
 		} else if result, err := services.SaveContact(db, contact); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{

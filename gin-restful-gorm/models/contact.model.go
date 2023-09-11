@@ -1,7 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Contact struct {
-	ID      string `gorm:"primary_key" json:"id"`
+	gorm.Model
 	Name    string `gorm:"type:varchar(50);NOT NULL" json:"name"`
 	Email   string `gorm:"type:varchar(50)" json:"email"`
 	Phone   string `gorm:"type:varchar(100);NOT NULL;UNIQUE;" json:"phone"`

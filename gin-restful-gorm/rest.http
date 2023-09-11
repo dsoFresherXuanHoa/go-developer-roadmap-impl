@@ -29,11 +29,10 @@ Content-Type: {{contentType}}
 }
 
 ###
-PATCH  {{host}}/v1/contacts/?id=1
+PATCH  {{host}}/v1/contacts/?id=2
 Content-Type: {{contentType}}
 
 {
-    "name": "Le Xuan Hoa",
     "email": "dso.intern.xuanhoa@gmail.com",
     "phone": "0356415806",
     "address": ""
