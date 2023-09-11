@@ -6,52 +6,45 @@ import (
 	"gorm.io/gorm"
 )
 
-// Change to Receiver
-func FindAllContact(db *gorm.DB, size int, page int) models.Contacts {
+func FindAllContact(db *gorm.DB) (models.Contacts, error) {
 	var contacts models.Contacts
-	if size == 0 || page == 0 {
-		if err := db.Find(&contacts).Error; err != nil {
-			return models.Contacts{}
-		} else {
-			return contacts
-		}
+	if err := db.Find(&contacts).Error; err != nil {
+		return nil, err
 	} else {
-		// Paging not working right now
-		if err := db.Offset(page).Limit(size).Find(&contacts).Error; err != nil {
-			return models.Contacts{}
-		} else {
-			return contacts
-		}
+		return contacts, nil
 	}
 }
 
-func FindContactById(id int, db *gorm.DB) models.Contact {
+func FindContactById(id int, db *gorm.DB) (models.Contact, error) {
 	var contact models.Contact
 	if err := db.Where("id = ?", id).First(&contact).Error; err != nil {
-		return models.Contact{}
+		return models.Contact{}, err
 	} else {
-		return contact
+		return contact, nil
 	}
 }
 
-func SaveContact(db *gorm.DB, contact models.Contact) bool {
-	if err := db.Create(&contact).Error; err != nil {
-		return false
+func SaveContact(db *gorm.DB, contact models.Contact) (interface{}, error) {
+	if result := db.Create(&contact); result.Error != nil {
+		return nil, result.Error
+	} else {
+		return result.RowsAffected, nil
 	}
-	return true
 }
 
-func UpdateContact(db *gorm.DB, id int, contact models.Contact) bool {
-	if err := db.Model(&contact).Where("id = ?", id).Updates(models.Contact{Name: contact.Name, Email: contact.Email}).Error; err != nil {
-		return false
+func UpdateContact(db *gorm.DB, id int, contact models.Contact) (interface{}, error) {
+	if result := db.Model(&contact).Where("id = ?", id).Updates(map[string]interface{}{"Name": contact.Name, "Email": contact.Email, "Phone": contact.Phone, "Address": contact.Address}); result.Error != nil {
+		return nil, result.Error
+	} else {
+		return result.RowsAffected, nil
 	}
-	return true
 }
 
-func DeleteContact(db *gorm.DB, id int) bool {
+func DeleteContact(db *gorm.DB, id int) (interface{}, error) {
 	var contact models.Contact
-	if err := db.Where("id = ?", id).Delete(&contact).Error; err != nil {
-		return false
+	if result := db.Where("id = ?", id).Delete(&contact); result.Error != nil {
+		return nil, result.Error
+	} else {
+		return result.RowsAffected, nil
 	}
-	return true
 }

@@ -6,7 +6,9 @@ import (
 )
 
 func main() {
-	db := configs.GormConfig()
-
-	routes.RouteConfig(db)
+	if db, err := configs.GormConfig(); err != nil {
+		panic("Can't connect to database via GORM!")
+	} else {
+		routes.RouteConfig(db)
+	}
 }

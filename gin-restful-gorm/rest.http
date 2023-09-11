@@ -1,0 +1,45 @@
+@host = http://localhost:8080
+@contentType = application/json
+
+###
+GET {{host}}/v1/contacts
+Content-Type: {{contentType}}
+
+###
+GET {{host}}/v1/contacts/1
+Content-Type: {{contentType}}
+
+###
+POST {{host}}/v1/contacts
+Content-Type: {{contentType}}
+
+{
+    "name": "Xuan Hoa Le",
+    "email": "dso.intern.xuanhoa@gmail.com",
+    "phone": "0356415807",
+    "address": "Ho Chi Minh City"
+}
+
+###
+PUT {{host}}/v1/contacts/?id=1
+Content-Type: {{contentType}}
+
+{
+    "email": "dso.intern.xuanhoa@gmail.com"
+}
+
+###
+PATCH  {{host}}/v1/contacts/?id=1
+Content-Type: {{contentType}}
+
+{
+    "name": "Le Xuan Hoa",
+    "email": "dso.intern.xuanhoa@gmail.com",
+    "phone": "0356415806",
+    "address": ""
+}
+
+
+###
+DELETE {{host}}/v1/contacts/1
+Content-Type: {{contentType}}

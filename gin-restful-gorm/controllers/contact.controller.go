@@ -13,11 +13,12 @@ import (
 
 func FindAllContact(db *gorm.DB) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		size, _ := strconv.Atoi(ctx.Query("size"))
-		start, _ := strconv.Atoi(ctx.Query("start"))
-
-		if contacts := services.FindAllContact(db, size, start); reflect.DeepEqual(contacts, models.Contacts{}) {
+		if contacts, err := services.FindAllContact(db); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+		} else if (reflect.DeepEqual(contacts, models.Contacts{})) {
+			ctx.JSON(http.StatusNoContent, gin.H{
 				"message": "No record find!",
 			})
 		} else {
@@ -32,18 +33,20 @@ func FindContactByID(db *gorm.DB) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		if id, err := strconv.Atoi(ctx.Param("id")); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
-				"err": err.Error(),
+				"error": err.Error(),
+			})
+		} else if contact, err := services.FindContactById(id, db); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+		} else if contact == (models.Contact{}) {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"message": "No record find!",
 			})
 		} else {
-			if contact := services.FindContactById(id, db); contact == (models.Contact{}) {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"message": "No record find!",
-				})
-			} else {
-				ctx.JSON(http.StatusOK, gin.H{
-					"data": contact,
-				})
-			}
+			ctx.JSON(http.StatusOK, gin.H{
+				"data": contact,
+			})
 		}
 	}
 }
@@ -55,16 +58,16 @@ func SaveContact(db *gorm.DB) func(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
+		} else if result, err := services.SaveContact(db, contact); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"message": "Can't save record to database!",
+				"error":   err.Error(),
+			})
 		} else {
-			if !services.SaveContact(db, contact) {
-				ctx.JSON(http.StatusBadRequest, gin.H{
-					"message": "Can't save record to database!",
-				})
-			} else {
-				ctx.JSON(http.StatusOK, gin.H{
-					"message": "Record has been saved!",
-				})
-			}
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "Record has been saved!",
+				"data":    result,
+			})
 		}
 	}
 }
@@ -78,13 +81,15 @@ func UpdateContact(db *gorm.DB) func(ctx *gin.Context) {
 			})
 		} else {
 			id, _ := strconv.Atoi(ctx.Query("id"))
-			if !services.UpdateContact(db, id, contact) {
+			if result, err := services.UpdateContact(db, id, contact); err != nil {
 				ctx.JSON(http.StatusBadRequest, gin.H{
 					"message": "Can't save record to database!",
+					"error":   err.Error(),
 				})
 			} else {
 				ctx.JSON(http.StatusOK, gin.H{
 					"message": "Record has been saved!",
+					"data":    result,
 				})
 			}
 		}
@@ -94,13 +99,15 @@ func UpdateContact(db *gorm.DB) func(ctx *gin.Context) {
 func DeleteContact(db *gorm.DB) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		id, _ := strconv.Atoi(ctx.Param("id"))
-		if !services.DeleteContact(db, id) {
+		if result, err := services.DeleteContact(db, id); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"message": "Can't deleted record to database!",
+				"error":   err.Error(),
 			})
 		} else {
 			ctx.JSON(http.StatusOK, gin.H{
 				"message": "Record has been deleted!",
+				"data":    result,
 			})
 		}
 	}

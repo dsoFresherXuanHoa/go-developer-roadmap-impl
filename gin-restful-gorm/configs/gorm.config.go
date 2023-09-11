@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func GormConfig() *gorm.DB {
+func GormConfig() (*gorm.DB, error) {
 	if err := godotenv.Load(); err != nil {
 		panic("Can't load .env variable!")
 	}
@@ -22,10 +22,11 @@ func GormConfig() *gorm.DB {
 
 	dns := USER + ":" + PASSWORD + "@tcp(127.0.0.1:3306)/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
 	if db, err := gorm.Open(mysql.Open(dns), &gorm.Config{}); err != nil {
-		panic("Can't connect to database: " + err.Error())
+		log.Println("Can't connect to database: " + err.Error())
+		return nil, err
 	} else {
 		db.AutoMigrate(&models.Contact{})
 		log.Println("Connection to database has been created and all entity has been synced!!!")
-		return db
+		return db, nil
 	}
 }
