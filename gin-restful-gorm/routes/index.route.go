@@ -10,5 +10,5 @@ func RouteConfig(db *gorm.DB) {
 
 	ContactRouteConfig(db, router)
 
-	router.Run()
+	router.Run(":3001")
 }
