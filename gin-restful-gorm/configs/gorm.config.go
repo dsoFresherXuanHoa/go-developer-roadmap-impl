@@ -20,7 +20,7 @@ func GormConfig() (*gorm.DB, error) {
 	var PASSWORD = os.Getenv("PASSWORD")
 	var DATABASE = os.Getenv("DATABASE")
 
-	dns := USER + ":" + PASSWORD + "@tcp(127.0.0.1:3306)/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
+	dns := USER + ":" + PASSWORD + "@tcp(contactdb:3306)/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
 	if db, err := gorm.Open(mysql.Open(dns), &gorm.Config{}); err != nil {
 		log.Println("Can't connect to database: " + err.Error())
 		return nil, err

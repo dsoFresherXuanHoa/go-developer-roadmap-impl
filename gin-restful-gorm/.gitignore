@@ -32,3 +32,5 @@
 
 # Go workspace file
 go.work
+
+docker/mysql

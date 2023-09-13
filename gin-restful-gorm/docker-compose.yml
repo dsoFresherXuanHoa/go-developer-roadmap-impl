@@ -1,20 +1,40 @@
-version: "3.8"
-
+version: "3"
 services:
   gin:
     container_name: gin
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - 3001:3001
+    networks:
+      - golangnet
     depends_on:
-      - mysql
+      contactdb:
+        condition: service_healthy
 
-  mysql:
-    container_name: mysql
-    image: mysql:8.0
+  contactdb:
+    container_name: contactdb
+    image: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=PBRAGJDejNumgLLyNM4wzFYkq8JA5QXS
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+      - ./docker/init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 3306:3306
+    networks:
+      - golangnet
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3306" ]
+      interval: 30s
+      timeout: 30s
+      retries: 2
+      start_period: 30s
+  adminerblog:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+networks:
+  golangnet:
+    driver: bridge
