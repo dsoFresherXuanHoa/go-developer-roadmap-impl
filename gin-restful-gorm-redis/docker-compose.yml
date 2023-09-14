@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  gin-application:
+    container_name: gin-application
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      mysql-database:
+        condition: service_healthy
+      # redis-cache:
+      #   condition: service_healthy
+    networks:
+      - gin-restful-gorm-net
+
+  mysql-database:
+    container_name: mysql-database
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=PBRAGJDejNumgLLyNM4wzFYkq8JA5QXS
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 15s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    networks:
+      - gin-restful-gorm-net
+
+  # redis-cache:
+  #   container_name: redis-cache
+  #   image: redis:7.2.1
+  #   restart: always
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - ./docker/redis:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 15s
+  #     timeout: 15s
+  #     retries: 3
+  #     start_period: 30s
+  #   networks:
+  #     - gin-restful-gorm-net
+
+networks:
+  gin-restful-gorm-net:
+    driver: bridge

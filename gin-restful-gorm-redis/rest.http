@@ -1,0 +1,43 @@
+@host = http://localhost:8080
+@contentType = application/json
+
+###
+GET {{host}}/accounts
+Content-Type: {{contentType}}
+
+###
+GET {{host}}/accounts/dsoFresherXuanHoa
+Content-Type: {{contentType}}
+
+###
+POST {{host}}/accounts
+Content-Type: {{contentType}}
+
+{
+    "username": "dsoInternXuanHoa",
+    "email": "dso.intern.xuanhoa@gmail.com",
+    "password": "dsoFresherXuanHoa"
+}
+
+###
+PUT {{host}}/accounts/?username=dsoFresherXuanHoa
+Content-Type: {{contentType}}
+
+{
+    "email": "dso.intern.xuanhoa@gmail.com",
+    "password": ""
+}
+
+###
+PATCH  {{host}}/accounts/?username=dsoFresherXuanHoa
+Content-Type: {{contentType}}
+
+{
+    "email": "training.dso.xuanhoa@gmail.com",
+    "password": ""
+}
+
+
+###
+DELETE {{host}}/accounts/?username=dsoInternXuanHoa
+Content-Type: {{contentType}}
