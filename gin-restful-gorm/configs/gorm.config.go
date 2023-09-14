@@ -16,13 +16,13 @@ func GormConfig() (*gorm.DB, error) {
 		panic("Can't load .env variable!")
 	}
 
-	var USER = os.Getenv("USER")
-	var PASSWORD = os.Getenv("PASSWORD")
+	var MYSQL_ROOT_USER = os.Getenv("MYSQL_ROOT_USER")
+	var MYSQL_ROOT_PASSWORD = os.Getenv("MYSQL_ROOT_PASSWORD")
 	var DATABASE = os.Getenv("DATABASE")
+	var MYSQL_NETWORK = os.Getenv("MYSQL_NETWORK")
 
-	dns := USER + ":" + PASSWORD + "@tcp(127.0.0.1:3306)/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
+	dns := MYSQL_ROOT_USER + ":" + MYSQL_ROOT_PASSWORD + "@tcp(" + MYSQL_NETWORK + ":3306)/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
 	if db, err := gorm.Open(mysql.Open(dns), &gorm.Config{}); err != nil {
-		log.Println("Can't connect to database: " + err.Error())
 		return nil, err
 	} else {
 		db.AutoMigrate(&models.Contact{})

@@ -1,20 +1,40 @@
-version: "3.8"
+version: "3"
 
 services:
-  gin:
-    container_name: gin
+  gin-application:
+    container_name: gin-application
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 8080:8080
     depends_on:
-      - mysql
+      mysql-database:
+        condition: service_healthy
+    networks:
+      - gin-restful-gorm-net
 
-  mysql:
-    container_name: mysql
+  mysql-database:
+    container_name: mysql-database
     image: mysql:8.0
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=PBRAGJDejNumgLLyNM4wzFYkq8JA5QXS
     ports:
       - 3306:3306
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    networks:
+      - gin-restful-gorm-net
+
+networks:
+  gin-restful-gorm-net:
+    driver: bridge
