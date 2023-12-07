@@ -1,0 +1,10 @@
+@host = http://localhost:3000
+@contentType = application/json
+
+###
+POST {{host}}/go-crawl
+Content-Type: {{contentType}}
+
+###
+POST {{host}}/crawl
+Content-Type: {{contentType}}
