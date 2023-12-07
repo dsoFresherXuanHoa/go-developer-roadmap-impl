@@ -1,0 +1,11 @@
+@host = http://localhost:3001/api/v1/accounts
+@contentType = application/json
+
+###
+POST {{host}}
+Content-Type: {{contentType}}
+
+{
+    "email": "training.dso.xuanhoa@gmail.com",
+    "password": "dsoInternXuanHoa"
+}
