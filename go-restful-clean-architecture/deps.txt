@@ -1,0 +1,5 @@
+go get github.com/cosmtrek/air
+go get github.com/gin-gonic/gin
+go get gorm.io/gorm
+go get gorm.io/driver/mysql
+go get github.com/joho/godotenv
