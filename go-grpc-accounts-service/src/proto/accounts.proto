@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package accounts;
+
+option go_package = "./accounts";
+
+message Request {
+    string username = 1;
+    string password = 2;
+    string fullName = 3;
+    int32 userId = 4;
+}
+
+message Response {
+    int32 accountId = 1;
+}
+
+service AccountService {
+    rpc CreateAccountGrpc (Request) returns (Response) {};
+}

@@ -1,0 +1,12 @@
+@host = http://localhost:3000/api/v1/auth
+@contentType = application/json
+
+###
+POST {{host}}/sign-up
+Content-Type: {{contentType}}
+
+{
+    "fullName": "Le Xuan Hoa",
+    "username": "dsoFresherXuanHoa",
+    "password": "dsoFresherXuanHoa"
+}
